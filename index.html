@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+        <form name="form1" method="post" action="">
+                <input type="checkbox" name="chkShowInput" value="" OnClick="JavaScript:fncShowHideInput(this);">
+                <input type="text" name="txtName" id="txtName1" value="">
+                <input type="text" name="txtName" id="txtName2" value="">
+                <br><br>	
+                <input type="checkbox" name="chkShowTable" value="" OnClick="JavaScript:fncShowHideTable(this);">
+                <table width="26%"  border="1" id="tbMain">
+                  <tr>
+                    <td>ThaiCreae.Com</td>
+                  </tr>
+                </table>
+        </form>
+    <script>
+        // มองข้อมูลว่าเป็น true หรือ false
+        var obj_1 = 10;
+        var obj_2 = 20;
+        // มองข้อมูลว่าเป็น true หรือ false
+        //นิเสธ ! NOT จะกลับกัน ข้อมูลเป็น false จะได้ True ข้อมูลเป็น True จะได้ false
+        if(obj_1 != obj_2){
+            console.log('false');
+            
+        }else{
+            console.log('hello ลอจิก NOT ! = True');
+        }
+        //นิเสธ ! NOT จะกลับกัน ข้อมูลเป็น false จะได้ True ข้อมูลเป็น True จะได้ false
+
+        function fncShowHideInput(value){
+
+            var input1 = document.getElementById('txtName1');
+            var input2 = document.getElementById('txtName2');
+            if(value.checked){
+
+                input1.style.display='none';
+                input2.style.display='none';
+
+            }else{
+                input1.style.display='';
+                input2.style.display='';
+            }
+        }
+
+        function fncShowHideTable(value)
+        {
+            var idTb = document.getElementById('tbMain');
+            if(value.checked){
+                idTb.style.display='none';
+            }else{
+
+                idTb.style.display='';
+
+            }
+        }
+
+    </script>
+</body>
+</html>
