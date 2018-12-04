@@ -122,6 +122,73 @@
         // var hi = say();
         // hi();
 
+        // function myFunction(param1, param2) //ใน javascript ไม่จำเป็นต้องส่งค่าอาร์กิวเมนต์มาให้ครบทุกตัว
+        // {
+        //     console.log(param1,param2)
+        // }
+        // myFunction();
+        // myFunction(100);
+        // myFunction(100,200);
+        // myFunction(100,200,300,400);
+
+        // function myFunction (param1,param2) //ออเจ็กต์ arguments จะเก็บค่าอาร์กิวเมรต์ทุกตัวที่ส่งเข้ามาให้ฟังก์ชั่น
+        // {
+        //     console.log(arguments);
+        // }
+        // myFunction(100,200,300,400);
+
+        // function myFunction(param1,param2)
+        // {
+        //     console.log("function 1 value:",param1,param2);
+        // }
+        // myFunction(100,200);
+
+        // function myFunction(param) //จะโอเวอร์ไรด์ทับฟังก์ชั่นที่ประกาศไว้ก่อนหน้านี้ ในจาวาสคริปเมื่อประกาศชื่อฟังก์ชั่นซ้ำกัน มันจะทำการโอเวอร์ไรด์ ทันทีหมายถึงฟังก์ชั่นที่ประกาศล่าสุด จะไปทับชื่อที่ประกาศไว้ก่อนหน้า
+        // {
+        //     console.log("function2 value:",param);
+        // }
+        // myFunction(100);
+        // myFunction(100,200);
+
+        // var a = "Hi"; // a มีขอบเขตการมองเห็นแบบโกลบอล
+        // function myFunction()
+        // {
+        //     var a = "Bye"; //a มีขอบเขตการมองเห็นแบบโลคอล เพราะประกาศภายใต้ฟังก์ชั่น
+        //     console.log(a);
+        // }
+        // myFunction();
+        // console.log(a);
+        // console.log(window.a); //ในเว็บเบราเซอร์นั้น ตัวออบเจ็กต์โกลบอลก็คือ windowใ ถ้ารันอยู๋ใน Node.js ออบเจ็กต์โกบอลจะใช้คำว่า global. แทน
+
+        // function outerFunc () //ฟังก์ชั่นซ้อนฟังก์ชั่น 
+        // {
+        //     var value = 0;
+        //     function innerFunc (){ //ฟังก์ชั่นที่อยู่ภายใต้ฟังก์ชั่นหลักจะสามารถเข้าถึงตัวแปรของฟังก์ชั่นหลักได้เรียกว่า closure ในทางกลับกันฟังก์ชั่นหลักจะมองไม่เห็นตัวแปรที่อยู่ในฟังก์ชั่นใต้มันเลย
+        //         console.log(++value);
+        //     }
+        //     return innerFunc;
+        // };
+        // var func1 = outerFunc();
+        // func1(); //เมื่อเรียกใช้ func1 () ให้ทำงาน มันจะจำได้ว่าเคยประกาศอยู่ที่ใด และสามารถมองเห็นตัวแปลโลคอล value ที่อยู่ในฟังก์ชั่น outerFunc() จึงทำให้การเรียก func1() ทุกครั้งสามารถเพิ่มค่า value ได้เรื่อยๆ
+        // func1();
+
+        // var func2 = outerFunc();
+        // func2();
+        // func2();
+
+        function outerFunc(){
+            innerFunc(); //มองเห็นฟังก์ชั่นก่อนการประกาศใช้งาน
+            function innerFunc()
+            {
+                console.log("inner function");
+            }
+        };
+
+        outerFunc();
+        console.log(typeof innerFunc);
+
+
+
 
     
     </script>
