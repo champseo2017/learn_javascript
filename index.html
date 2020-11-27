@@ -1,27 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
-</head>
-<body>
-    
-        <form name="form1" method="post" action="">
-                <input type="checkbox" name="chkShowInput" value="" OnClick="JavaScript:fncShowHideInput(this);">
-                <input type="text" name="txtName" id="txtName1" value="">
-                <input type="text" name="txtName" id="txtName2" value="">
-                <br><br>	
-                <input type="checkbox" name="chkShowTable" value="" OnClick="JavaScript:fncShowHideTable(this);">
-                <table width="26%"  border="1" id="tbMain">
-                  <tr>
-                    <td>ThaiCreae.Com</td>
-                  </tr>
-                </table>
-        </form>
+  </head>
+  <body>
+    <form name="form1" method="post" action="">
+      <input
+        type="checkbox"
+        name="chkShowInput"
+        value=""
+        OnClick="JavaScript:fncShowHideInput(this);"
+      />
+      <input type="text" name="txtName" id="txtName1" value="" />
+      <input type="text" name="txtName" id="txtName2" value="" />
+      <br /><br />
+      <input
+        type="checkbox"
+        name="chkShowTable"
+        value=""
+        OnClick="JavaScript:fncShowHideTable(this);"
+      />
+      <table width="26%" border="1" id="tbMain">
+        <tr>
+          <td>ThaiCreae.Com</td>
+        </tr>
+      </table>
+    </form>
     <script>
-       /* 
+      /* 
           พร็อกซี่
           ตัวแทน (ออบเจ็กต์ที่มาห่อหุ้มออบเจ็กเป้าหมายเอาไว้)
           เวลาใช้งานกระทำผ่าน proxy
@@ -91,15 +100,49 @@
         // เมื่อลบค่าพร็อพเพอร์ตี้
         -Reflect.deleteProperty()
 
+        ตัวอย่างการใช้งานพร็อกซี่
+        ตัวอย่างต่อไปนี้จะแสดงการดัดแปลงพฤติกรรมของออบเจ็กต์ ด้วยการใช้พร็อกซี่
+         let obj = { foo: 1 };
+      let trapLogic = {
+        set(targetObj, key, value, proxy) {
+          // กำหนดค่าให้กับพร็อพเพอร์ตี้
+          if (Reflect.has(targetObj, key)) {
+            return Reflect.set(targetObj, key, value);
+          } else {
+            throw `Cat't write property: ${key}`;
+          }
+        },
+        get(targetObj, key, proxy) {
+          // อ่านค่าพร็อพเพอร์ตี้
+          if (Reflect.has(targetObj, key)) {
+            return Reflect.get(targetObj, key);
+          } else {
+            throw `Cat't write property: ${key}`;
+          }
+        },
+        deleteProperty(targetObj, key) {
+          // ลบพร็อพเพอร์ตี้
+          if (Reflect.has(targetObj, key)) {
+            return Reflect.deleteProperty(targetObj, key);
+          } else {
+            throw `Cat't write property: ${key}`;
+          }
+        },
+      };
+
+      let proxyObj = new Proxy(obj, trapLogic);
+      proxyObj.foo = 100; // เรียกใช้ trap set
+      console.log(proxyObj.foo) // เรียกใช้ trap get
+      //console.log(delete proxyObj.foo) // true
+
+      proxyObj.a = 1;
+      console.log(proxyObj.b);
+      delete proxyObj.c;
+
 
        */
-       
-       
-       
-      
-     
-      
 
+     
     </script>
-</body>
+  </body>
 </html>
