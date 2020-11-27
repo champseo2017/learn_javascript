@@ -22,73 +22,80 @@
         </form>
     <script>
        /* 
-        Reflect เป็นออบเจ็กต์หนึ่งใน ES6 ที่มีแต่เมธอดสแตติก
-        let obj = {};
-        obj.a = 100;
-        console.log(obj.a);
-       let obj = {};
-       Reflect.set(obj, "a", 100) // เหมือนประโยค obj.a = 100;
-       console.log(Reflect.get(obj, "a")) // เหมือนเขียนประโนค console.log(obj.a)
-       ในตัวอย่างนี้เมธอด Reflect.set() จะรับค่าอาร์กิวเมนต์ทั้งหมด 3 ตัว
-       - โดยตัวแรกเป็นออบเจ็กต์เป้าหมาย
-       - ตัวที่สองจะเป็นชื่อคีย์
-       - และตัวที่สามเป็นข้อมูลที่จำกำหนดให้กับออบเจ็กต์เป้าหมาย
+          พร็อกซี่
+          ตัวแทน (ออบเจ็กต์ที่มาห่อหุ้มออบเจ็กเป้าหมายเอาไว้)
+          เวลาใช้งานกระทำผ่าน proxy
 
-       ส่วนเมธอด Reflect.get() จะรับค่าอาร์กิวเมนต์ 2 ตัว โดยตัวแรกเป็นออบเจ็กต์เป้าหมาย ตัวที่สองจะเป็นชื่อคีย์ที่ต้องการอ่าน
-       ผลการทำงาน
-       -ประโยค Reflect.set(obj, "a", 100); จะเป็นการกำหนดค่าให้กับ obj.a เป็น 100
-       -ประโยค Reflect.get(obj, "a") จะเป็นการอ่านค่าของ obj.a
+          let obj = {a: 100};
+       let handler = {};
+       let proxyObj = new Proxy(obj, handler)
+       console.log(proxyObj.a)
+       console.log(obj.a);
+       // ห่ออาร์เรย์
+       let proxyArray = new Proxy([1, 2, 3], {})
+       console.log(proxyArray[1]);
+       console.log(...proxyArray);
 
-       สำหรับคำว่า Reflect จะแปลได้ว่า สะท้อนกลับการเรียกออบเจ็กต์ผ่านทาง Reflect ตัวเมธอดของ Reflect จะเป็นคนสะท้อนกลับมาเรียกออบเจ็กต์อีกทีหนึ่ง (ไม่ต้องเรียกออบเจ็กต์โดยตรง)
+       // ห่อฟังก์ชันลูกศร
+       let proxyFunc = new Proxy(() => console.log("myFunction"), {} );
+       proxyFunc();
 
-       สรุปเมธอดต่างๆของ Reflect
-       Reflect.get ใช้อ่านค่าพร็อพเพอร์ตี้ของออบเจ็กต์ 
-       ตัวอย่างการใช้ 
-       Reflect.get(obj, "foo");
-       //จะเหมือนอ่านค่า obj.foo;
+       // ห่อพร็อกซี่
+       let proxyObj1 = new Proxy(proxyArray, {});
+       console.log(...proxyObj1);
 
-       Reflect.get(array, 2)
-       // จะเหมือนอ่านค่า array[2];
+       // ห่อพร็อกซี่
+       let proxyObj2 = new Proxy(proxyFunc, {})
+       proxyObj2();
 
-       Reflect.set() ใช้กำหนดค่าให้กับพร็อพเพอร์ตี้ของออบเจ็กต์
-       ถ้ากำหนดค่าได้สำเร็จจะรีเทิร์นค่าเป็น true ถ้าไม่สำเร็จจะได้เป็น false 
+       Trap
+       สำหรับออบเจ็กต์ handler ที่เห็นมาแล้ว สามารถมีเมอธอดประกาศอยู่ข้างในได้เพื่อให้สามารถแทรกลอจิกเข้าไปได้ตามต้องการ
 
-       Reflect.set(obj, "foo", 100);
-       // จะเหมือนเขียนเป็น obj.foo = 100;
+       let obj = {a: 100};
+       let trapLogic = {
+           get(tragetObj, key, proxy){
+               console.log(`key: ${key}`);
+               // targetObj ในตัวอย่างนี้คือ obj
+               // proxy ในตัวอย่างนี้คือ proxyObj
 
-       Reflect.set(array, 2, "foo")
-       // จะเหมือนเขียนเป็น array[2] = "foo";
+               return Reflect.get(tragetObj, key);
+               // เนื่องจาก Reflect บางเว็บเบราเซอร์อาจไม่ทำงาน จึงอาจเขียนแบบนี้แทนได้
+               // return targetObj[key];
+           }
+       }
 
-       Reflect.deleteProperty()
-       ใช้งานเหมือนโอเปอเรเตอร์ delete ซึ้งมีไว้ลบพร็อพเพอร์ตี้ของออบเจ็กต์
-       ถ้าลบได้สำเร็จจะรีเทิร์นค่าเป็น true ถ้าไม่สำเร็จจะได้เป็น false
-       
-       Reflect.deleteProperty(obj, "foo")
-       // จะเหมือนเขียนเป็น delete obj.foo;
+       let proxyObj = new Proxy(obj, trapLogic);
+       console.log(proxyObj.a);
+       // เหมือน
+       console.log(obj.a)
 
-       Reflect.apply() 
-       เรียกฟังก์ชันให้ทำงาน และรีเทิร์นผลลัพธ์จากการเรียกฟังก์ชัน
-       Reflect.apply(foo, thisObj, ["bar", "zoo"])
-
-       // จะเหมือนเรียกฟังก์ชันแบบนี้
-       // foo.apply(thisObj, ["bar", "zoo"]);
-       // โดยที่ foo คือฟังก์ชัน
-       // "bar" กับ "zoo" คือค่าอาร์กิวเมนต์ของฟังก์ชัน
-       // thisObj จะกลายมาเป็นค่าของ this ในฟังก์ชัน foo
-
-       Reflect.construct() ใช้งานเหมือนโอเปอเรอตร์ new และรีเทิร์นผลลพธ์เป็นออบเจ็กต์ที่ถูกสร้างขึ้นมา
-       Reflect.construct(Car, ["foo", "bar"])
-       // จะเหมือนเขียนเป็น new Car("foo", "bar")
-
-       Reflect.has() ใช้งานเหมือนโอเปอร์เรเตอร์ in เพื่อตรวจสอบว่าคีย์เป็นของออบเจ็ต์หรือไม่ หรือเป็นคีย์ที่สืบทอดมาจากโปรโตไทป์หรือไม่ ถ้าใช้ return true หรือ false
-
-       Reflect.has(foo, "bar")
-       // จะเหมือนเขียนเป็น "bar" in foo;
-
-
+        - พารามิเตอร์ตัวแรกคือ ออบเจ็กต์เป้าหมาย
+        - พารามิเตอร์ตัวที่สองคือ ชื่อคีย์
+        - พารามิเตอร์ตัวที่สามคือ พร็อกซี่นั้นเอง
+        สำหรับเมธอด get() เอาไว้ดักจับเหตึการณ์ที่พร็อพเพอร์ตี้ของพร็อกซี่ถูกอ่านค่าเท่านั้น สามารถแทรกโลจิกก่อนหรือหลังเรียกต่อไปยังออบเจ็กต์เป้าหมาย
         
-       
+        เมธอดต่างๆ ที่จะทำหน้าที่เป็น trap
+        get(targetObj, key, proxy) event 
+        -Reflect.get()
+        -เข้าถึงพร็อพเพอร์ตี้ด้วยการใช้จุด (.) เพื่ออ่านค่า
+        -เข้าถึงพร็อพเพอร์ตี้โดยใช้วงเล็บเหลียม [...] เพื่ออ่านค่า
+
+        set(targetObj, key, value, proxy)
+        // เมื่อกำหนดค่าให้แก่พร็อพเพอร์ตี้
+        // ถ้าทำได้จะรีเทิร์นเป็น true ถ้าทำไม่ได้จะเป็น false
+        -Reflect.set()
+        -ใช้โอเปอเรเตอร์เครื่องหมายเท่ากับ (=) กำหนดค่า
+        -ใช้วิธีดีสตรัคเตอริ่ง
+
+        deleteProperty(targetObj, key)
+        // เมื่อลบค่าพร็อพเพอร์ตี้
+        -Reflect.deleteProperty()
+
+
        */
+       
+       
+       
       
      
       
