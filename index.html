@@ -21,45 +21,36 @@
                 </table>
         </form>
     <script>
-        // มองข้อมูลว่าเป็น true หรือ false
-        var obj_1 = 10;
-        var obj_2 = 20;
-        // มองข้อมูลว่าเป็น true หรือ false
-        //นิเสธ ! NOT จะกลับกัน ข้อมูลเป็น false จะได้ True ข้อมูลเป็น True จะได้ false
-        if(obj_1 != obj_2){
-            console.log('false');
-            
-        }else{
-            console.log('hello ลอจิก NOT ! = True');
-        }
-        //นิเสธ ! NOT จะกลับกัน ข้อมูลเป็น false จะได้ True ข้อมูลเป็น True จะได้ false
+       /* 
+       Meta Programming (การเขียนโปรแกรมทีหลัง) ด้วยการใช้ฟังก์ชัน eval() ซึ้งมันจะรับค่าอาร์กิวเมนต์เป็นซอร์สโค้ดขึ้นมาจากสตริง เมื่อถึงเวลา eval() ทำงาน ก็จะประมวลสตริงดังกล่าวให้ใมันทำงานได้จริง
 
-        function fncShowHideInput(value){
+         var function1 = "function myFunction (a, b){console.log(a*b)}";
+       var function2 = "function myFunction (a, b) {console.log(a/b)}";
+       var randomNUmber = Math.random() >= 0.5; // true หรือ false
+       var code = randomNUmber ? function1 : function2;
+       eval(code)
+       myFunction(10, 5); // 50 หรือ 2
 
-            var input1 = document.getElementById('txtName1');
-            var input2 = document.getElementById('txtName2');
-            if(value.checked){
+        eval() จะเลือกสร้างฟังก์ชันตัวไหน ก็ขึ้นอยู่กับ randomNumber ถ้าเป็น true ก็จะได้ฟังก์ชันที่เก็บไว้ในตัวแปร function1 แต่ถ้าเป็น false จะได้ฟังก์ชันที่เก็บไว้ใน function 2
+       จะเสมือนเขียน
+       function myFunction(a,b){
+           console.log(a*b)
+       }
 
-                input1.style.display='none';
-                input2.style.display='none';
-
-            }else{
-                input1.style.display='';
-                input2.style.display='';
-            }
-        }
-
-        function fncShowHideTable(value)
-        {
-            var idTb = document.getElementById('tbMain');
-            if(value.checked){
-                idTb.style.display='none';
-            }else{
-
-                idTb.style.display='';
-
-            }
-        }
+       
+       */
+     
+       /* 
+        Function()
+        เมต้าโปรแรกมมิ่ง ด้วยการใช้คอนสตรัคเตอร์ Function ที่มีใช้ในจาวาสคริปต์แบบเก่า
+       
+       */
+       var body1 = "console.log(a*b)";
+       var body2 = "console.log(a/b)";
+       var randomNumber = Math.random() >= 0.5; // true หรือ false
+       var myBody = randomNumber ? body1 : body2;
+       var myFunction = Function("a", "b", myBody);
+       myFunction(10, 5); // 50 หรือ 2
 
     </script>
 </body>
