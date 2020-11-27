@@ -139,10 +139,40 @@
       console.log(proxyObj.b);
       delete proxyObj.c;
 
-
+        ข้อควรระวังเมื่อใช้ trap
        */
 
-     
+      let obj = { a: 100 };
+      let trapLogic = {
+        getOwnPropertyDescriptor(targetObj, key) {
+          console.log(`getOwnPropertyDescriptor: ${key}`);
+          return Reflect.getOwnPropertyDescriptor(targetObj, key);
+        },
+        defineProperty(targetObj, key, descriptor) {
+          console.log(`defineProperty: ${key}`);
+          return Reflect.defineProperty(targetObj, key, descriptor);
+        },
+
+        set(targetObj, key, value, proxy) {
+          console.log(`set property: ${key} = ${value}`);
+          return Reflect.set(targetObj, key, value);
+        },
+      };
+
+      let proxyObj = new Proxy(obj, trapLogic);
+      proxyObj.a = 10;
+      /* 
+       แสดงผลลัพธ์เป็น
+       getOwnPropertyDescriptor: a
+       defineProperty: a
+       */
+      /* 
+       แต่ถ้าเอาคอมเมนต์ของบรรทัด c ออกไปจะเปลียนไปแสดงผลเป็น
+
+       เมื่อกำหนดค่า proxyObj.a ให้เป็น 100 ก็จะส่งผลทำให้เมธอด set() ที่เป็นดีฟอลด์ของ trapLogic ทำงานโดยอัตโนมัติ แถมยังไปเรียก trap อื่นให้ทำงานอีกด้วย
+
+       เราต้องกำหนดการโอเวอร์ไรด์เมธอด set() ใน proxtObj ถ้าจะกำหนดค่า trap อื่นจะไม่ทำงานเลย
+       */
     </script>
   </body>
 </html>
