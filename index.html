@@ -22,35 +22,76 @@
         </form>
     <script>
        /* 
-       Meta Programming (การเขียนโปรแกรมทีหลัง) ด้วยการใช้ฟังก์ชัน eval() ซึ้งมันจะรับค่าอาร์กิวเมนต์เป็นซอร์สโค้ดขึ้นมาจากสตริง เมื่อถึงเวลา eval() ทำงาน ก็จะประมวลสตริงดังกล่าวให้ใมันทำงานได้จริง
+        Reflect เป็นออบเจ็กต์หนึ่งใน ES6 ที่มีแต่เมธอดสแตติก
+        let obj = {};
+        obj.a = 100;
+        console.log(obj.a);
+       let obj = {};
+       Reflect.set(obj, "a", 100) // เหมือนประโยค obj.a = 100;
+       console.log(Reflect.get(obj, "a")) // เหมือนเขียนประโนค console.log(obj.a)
+       ในตัวอย่างนี้เมธอด Reflect.set() จะรับค่าอาร์กิวเมนต์ทั้งหมด 3 ตัว
+       - โดยตัวแรกเป็นออบเจ็กต์เป้าหมาย
+       - ตัวที่สองจะเป็นชื่อคีย์
+       - และตัวที่สามเป็นข้อมูลที่จำกำหนดให้กับออบเจ็กต์เป้าหมาย
 
-         var function1 = "function myFunction (a, b){console.log(a*b)}";
-       var function2 = "function myFunction (a, b) {console.log(a/b)}";
-       var randomNUmber = Math.random() >= 0.5; // true หรือ false
-       var code = randomNUmber ? function1 : function2;
-       eval(code)
-       myFunction(10, 5); // 50 หรือ 2
+       ส่วนเมธอด Reflect.get() จะรับค่าอาร์กิวเมนต์ 2 ตัว โดยตัวแรกเป็นออบเจ็กต์เป้าหมาย ตัวที่สองจะเป็นชื่อคีย์ที่ต้องการอ่าน
+       ผลการทำงาน
+       -ประโยค Reflect.set(obj, "a", 100); จะเป็นการกำหนดค่าให้กับ obj.a เป็น 100
+       -ประโยค Reflect.get(obj, "a") จะเป็นการอ่านค่าของ obj.a
 
-        eval() จะเลือกสร้างฟังก์ชันตัวไหน ก็ขึ้นอยู่กับ randomNumber ถ้าเป็น true ก็จะได้ฟังก์ชันที่เก็บไว้ในตัวแปร function1 แต่ถ้าเป็น false จะได้ฟังก์ชันที่เก็บไว้ใน function 2
-       จะเสมือนเขียน
-       function myFunction(a,b){
-           console.log(a*b)
-       }
+       สำหรับคำว่า Reflect จะแปลได้ว่า สะท้อนกลับการเรียกออบเจ็กต์ผ่านทาง Reflect ตัวเมธอดของ Reflect จะเป็นคนสะท้อนกลับมาเรียกออบเจ็กต์อีกทีหนึ่ง (ไม่ต้องเรียกออบเจ็กต์โดยตรง)
 
+       สรุปเมธอดต่างๆของ Reflect
+       Reflect.get ใช้อ่านค่าพร็อพเพอร์ตี้ของออบเจ็กต์ 
+       ตัวอย่างการใช้ 
+       Reflect.get(obj, "foo");
+       //จะเหมือนอ่านค่า obj.foo;
+
+       Reflect.get(array, 2)
+       // จะเหมือนอ่านค่า array[2];
+
+       Reflect.set() ใช้กำหนดค่าให้กับพร็อพเพอร์ตี้ของออบเจ็กต์
+       ถ้ากำหนดค่าได้สำเร็จจะรีเทิร์นค่าเป็น true ถ้าไม่สำเร็จจะได้เป็น false 
+
+       Reflect.set(obj, "foo", 100);
+       // จะเหมือนเขียนเป็น obj.foo = 100;
+
+       Reflect.set(array, 2, "foo")
+       // จะเหมือนเขียนเป็น array[2] = "foo";
+
+       Reflect.deleteProperty()
+       ใช้งานเหมือนโอเปอเรเตอร์ delete ซึ้งมีไว้ลบพร็อพเพอร์ตี้ของออบเจ็กต์
+       ถ้าลบได้สำเร็จจะรีเทิร์นค่าเป็น true ถ้าไม่สำเร็จจะได้เป็น false
+       
+       Reflect.deleteProperty(obj, "foo")
+       // จะเหมือนเขียนเป็น delete obj.foo;
+
+       Reflect.apply() 
+       เรียกฟังก์ชันให้ทำงาน และรีเทิร์นผลลัพธ์จากการเรียกฟังก์ชัน
+       Reflect.apply(foo, thisObj, ["bar", "zoo"])
+
+       // จะเหมือนเรียกฟังก์ชันแบบนี้
+       // foo.apply(thisObj, ["bar", "zoo"]);
+       // โดยที่ foo คือฟังก์ชัน
+       // "bar" กับ "zoo" คือค่าอาร์กิวเมนต์ของฟังก์ชัน
+       // thisObj จะกลายมาเป็นค่าของ this ในฟังก์ชัน foo
+
+       Reflect.construct() ใช้งานเหมือนโอเปอเรอตร์ new และรีเทิร์นผลลพธ์เป็นออบเจ็กต์ที่ถูกสร้างขึ้นมา
+       Reflect.construct(Car, ["foo", "bar"])
+       // จะเหมือนเขียนเป็น new Car("foo", "bar")
+
+       Reflect.has() ใช้งานเหมือนโอเปอร์เรเตอร์ in เพื่อตรวจสอบว่าคีย์เป็นของออบเจ็ต์หรือไม่ หรือเป็นคีย์ที่สืบทอดมาจากโปรโตไทป์หรือไม่ ถ้าใช้ return true หรือ false
+
+       Reflect.has(foo, "bar")
+       // จะเหมือนเขียนเป็น "bar" in foo;
+
+
+        
        
        */
+      
      
-       /* 
-        Function()
-        เมต้าโปรแรกมมิ่ง ด้วยการใช้คอนสตรัคเตอร์ Function ที่มีใช้ในจาวาสคริปต์แบบเก่า
-       
-       */
-       var body1 = "console.log(a*b)";
-       var body2 = "console.log(a/b)";
-       var randomNumber = Math.random() >= 0.5; // true หรือ false
-       var myBody = randomNumber ? body1 : body2;
-       var myFunction = Function("a", "b", myBody);
-       myFunction(10, 5); // 50 หรือ 2
+      
 
     </script>
 </body>
